@@ -50,3 +50,17 @@ int main() {
 
     return 0;
 }
+
+int cntFactors(int n)
+{
+    int c = 0;
+    for(int i = 2; i*1ll*i <= n; i++){
+        while((n%i) == 0)
+        {
+            n /= i;
+            c++;
+        }
+    }
+    if(n > 1) c++;   
+    return c;
+}
