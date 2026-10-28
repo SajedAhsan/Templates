@@ -24,6 +24,25 @@ int gcdValue(int a, int b) {
     return a;
 }
 
+ll modPower(ll base, ll exponent, ll mod) {
+    ll result = 1 % mod;
+    base %= mod;
+    while (exponent > 0) {
+        if (exponent & 1) result = result * base % mod;
+        base = base * base % mod;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+ll floorDiv(ll numerator, ll denominator) {
+    assert(denominator != 0);
+    ll quotient = numerator / denominator;
+    ll remainder = numerator % denominator;
+    if (remainder != 0 && ((remainder < 0) != (denominator < 0))) --quotient;
+    return quotient;
+}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -34,6 +53,153 @@ int main() {
 
     vi a(n);
     for (int& x : a) cin >> x;
+
+    // ---------- bit manipulation ----------
+    int bits = 29;                         // Binary: 11101
+    int setBit = bits | (1 << 2);          // Set bit 2
+    int clearedBit = bits & ~(1 << 2);     // Clear bit 2
+    int toggledBit = bits ^ (1 << 2);      // Toggle bit 2
+    bool bitIsSet = (bits & (1 << 2)) != 0;
+    int lowestSetBit = bits & -bits;
+
+    // GCC/Clang built-ins:
+    int numberOfBits = __builtin_popcount(static_cast<unsigned int>(bits));
+    int longLongBits = __builtin_popcountll(1LL << 40);
+    int leadingZeros = __builtin_clz(static_cast<unsigned int>(bits)); // bits != 0
+    int trailingZeros = __builtin_ctz(static_cast<unsigned int>(bits)); // bits != 0
+    int oddParity = __builtin_parity(static_cast<unsigned int>(bits));
+    // C++20 alternatives: std::popcount(bits), std::countl_zero(bits),
+    // std::countr_zero(bits), and std::has_single_bit(bits).
+    (void)setBit;
+    (void)clearedBit;
+    (void)toggledBit;
+    (void)bitIsSet;
+    (void)lowestSetBit;
+    (void)numberOfBits;
+    (void)longLongBits;
+    (void)leadingZeros;
+    (void)trailingZeros;
+    (void)oddParity;
+
+    // ---------- mathematics ----------
+    const double PI = acos(-1.0);
+    double absoluteValue = abs(-12.5);
+    double squareRoot = sqrt(16.0);
+    double power = pow(2.0, 10.0);
+    double logarithm = log(100.0);
+    double roundedUp = ceil(2.3);
+    double roundedDown = floor(2.7);
+    double rounded = round(2.5);
+    int smaller = min(3, 5);
+    int larger = max(3, 5);
+    int greatestCommonDivisor = gcdValue(12, 18);
+    int leastCommonMultiple = 12 / greatestCommonDivisor * 18;
+    (void)PI;
+    (void)absoluteValue;
+    (void)squareRoot;
+    (void)power;
+    (void)logarithm;
+    (void)roundedUp;
+    (void)roundedDown;
+    (void)rounded;
+    (void)smaller;
+    (void)larger;
+    (void)greatestCommonDivisor;
+    (void)leastCommonMultiple;
+
+    // ---------- functions, lambdas, tuples ----------
+    auto square = [](ll x) { return x * x; };
+    auto byAbsoluteValue = [](int x, int y) {
+        if (abs(x) != abs(y)) return abs(x) < abs(y);
+        return x < y;
+    };
+    vector<int> lambdaValues = {-3, 1, -2};
+    sort(lambdaValues.begin(), lambdaValues.end(), byAbsoluteValue);
+    function<int(int)> factorial = [&](int x) {
+        return x <= 1 ? 1 : x * factorial(x - 1);
+    };
+    tuple<int, string, double> record = {7, "team", 9.5};
+    int id = get<0>(record);
+    string name = get<1>(record);
+    double score = get<2>(record);
+    // C++17 shorthand: auto [id, name, score] = record;
+    (void)square(4);
+    (void)factorial(5);
+    (void)id;
+    (void)name;
+    (void)score;
+
+    // ---------- useful standard algorithms ----------
+    vector<int> values = {1, 2, 2, 4, 5};
+    vector<int> prefix(values.size() + 1);
+    partial_sum(values.begin(), values.end(), prefix.begin() + 1);
+    vector<int> differences(values.size());
+    adjacent_difference(values.begin(), values.end(), differences.begin());
+    iota(values.begin(), values.end(), 1);
+    rotate(values.begin(), values.begin() + 2, values.end());
+    nth_element(values.begin(), values.begin() + 2, values.end());
+    bool allPositive = all_of(values.begin(), values.end(), [](int x) {
+        return x > 0;
+    });
+    bool hasEven = any_of(values.begin(), values.end(), [](int x) {
+        return x % 2 == 0;
+    });
+    bool noneNegative = none_of(values.begin(), values.end(), [](int x) {
+        return x < 0;
+    });
+    values.erase(remove_if(values.begin(), values.end(), [](int x) {
+        return x % 2 == 0;
+    }), values.end());
+    vector<int> transformed(values.size());
+    transform(values.begin(), values.end(), transformed.begin(),
+              [](int x) { return x * 2; });
+    (void)allPositive;
+    (void)hasEven;
+    (void)noneNegative;
+
+    // Merge/intersection require sorted ranges.
+    vector<int> first = {1, 2, 4};
+    vector<int> second = {2, 3, 4};
+    vector<int> merged, intersection, unionValues;
+    set_union(first.begin(), first.end(), second.begin(), second.end(),
+              back_inserter(unionValues));
+    set_intersection(first.begin(), first.end(), second.begin(), second.end(),
+                     back_inserter(intersection));
+    merge(first.begin(), first.end(), second.begin(), second.end(),
+          back_inserter(merged));
+
+    // ---------- bitset ----------
+    bitset<8> mask(string("10110010"));
+    mask.set(0);
+    mask.reset(1);
+    mask.flip(2);
+    bool bitsetValue = mask.test(3);
+    size_t setBits = mask.count();
+    string binary = mask.to_string();
+    (void)bitsetValue;
+    (void)setBits;
+    (void)binary;
+
+    // ---------- randomization ----------
+    mt19937 rng(static_cast<unsigned int>(
+        chrono::steady_clock::now().time_since_epoch().count()));
+    shuffle(values.begin(), values.end(), rng);
+    uniform_int_distribution<int> randomInt(1, 100);
+    int randomValue = randomInt(rng);
+    (void)randomValue;
+
+    // ---------- modular arithmetic ----------
+    const ll MOD = 1'000'000'007LL;
+    ll modularPower = modPower(2, 10, MOD);
+    ll modularInverse = modPower(5, MOD - 2, MOD); // MOD must be prime.
+    ll modularDivision = 10 * modularInverse % MOD;
+    (void)modularPower;
+    (void)modularDivision;
+
+    // For products beyond 64-bit, use __int128 where supported:
+    // __int128 wideProduct = static_cast<__int128>(1'000'000'000LL)
+    //                      * 1'000'000'000LL;
+    (void)floorDiv(-7, 3);
 
     // Read test cases:
     // int t;
@@ -169,6 +335,39 @@ int main() {
         for (int& cell : row) cin >> cell;
     }
 
+    // 2D prefix sums (use rows + 1 and cols + 1 to simplify boundaries).
+    vector<vector<ll>> prefixGrid(rows + 1, vector<ll>(cols + 1));
+    for (int row = 1; row <= rows; ++row) {
+        for (int col = 1; col <= cols; ++col) {
+            prefixGrid[row][col] = grid[row - 1][col - 1]
+                + prefixGrid[row - 1][col]
+                + prefixGrid[row][col - 1]
+                - prefixGrid[row - 1][col - 1];
+        }
+    }
+    auto rectangleSum = [&](int top, int left, int bottom, int right) {
+        return prefixGrid[bottom][right] - prefixGrid[top - 1][right]
+             - prefixGrid[bottom][left - 1] + prefixGrid[top - 1][left - 1];
+    };
+    if (rows > 0 && cols > 0) {
+        ll oneCell = rectangleSum(1, 1, 1, 1);
+        (void)oneCell;
+    }
+
+    // Coordinate compression.
+    vector<int> compressed = a;
+    sort(compressed.begin(), compressed.end());
+    compressed.erase(unique(compressed.begin(), compressed.end()),
+                     compressed.end());
+    auto compressedIndex = [&](int value) {
+        return lower_bound(compressed.begin(), compressed.end(), value)
+             - compressed.begin();
+    };
+    if (!a.empty()) {
+        int index = compressedIndex(a[0]);
+        (void)index;
+    }
+
     // ---------- Graphs ----------
     int vertices, edges;
     cin >> vertices >> edges;
@@ -185,6 +384,76 @@ int main() {
     // Weighted graph:
     vector<vector<pii>> weightedGraph(vertices + 1);
     // weightedGraph[u].push_back({v, weight});
+
+    // ---------- graph traversal ----------
+    vector<int> distance(vertices + 1, -1);
+    queue<int> bfsQueue;
+    int source = 1;
+    if (source <= vertices) {
+        distance[source] = 0;
+        bfsQueue.push(source);
+    }
+    while (!bfsQueue.empty()) {
+        int node = bfsQueue.front();
+        bfsQueue.pop();
+        for (int next : graph[node]) {
+            if (distance[next] == -1) {
+                distance[next] = distance[node] + 1;
+                bfsQueue.push(next);
+            }
+        }
+    }
+
+    vector<bool> visited(vertices + 1, false);
+    function<void(int)> dfs = [&](int node) {
+        visited[node] = true;
+        for (int next : graph[node]) {
+            if (!visited[next]) dfs(next);
+        }
+    };
+    if (source <= vertices) dfs(source);
+
+    // Grid directions: four-neighbor traversal.
+    const int dr[4] = {-1, 0, 1, 0};
+    const int dc[4] = {0, 1, 0, -1};
+    for (int direction = 0; direction < 4; ++direction) {
+        int nextRow = 0 + dr[direction];
+        int nextCol = 0 + dc[direction];
+        (void)nextRow;
+        (void)nextCol;
+    }
+
+    // ---------- disjoint set union ----------
+    vector<int> parent(vertices + 1), componentSize(vertices + 1, 1);
+    iota(parent.begin(), parent.end(), 0);
+    function<int(int)> findRoot = [&](int node) {
+        return parent[node] == node ? node : parent[node] = findRoot(parent[node]);
+    };
+    auto unite = [&](int left, int right) {
+        left = findRoot(left);
+        right = findRoot(right);
+        if (left == right) return;
+        if (componentSize[left] < componentSize[right]) swap(left, right);
+        parent[right] = left;
+        componentSize[left] += componentSize[right];
+    };
+    if (vertices >= 2) unite(1, 2);
+
+    // ---------- Fenwick tree / Binary Indexed Tree ----------
+    vector<ll> fenwick(n + 1);
+    auto add = [&](int index, ll value) {
+        for (; index <= n; index += index & -index) fenwick[index] += value;
+    };
+    auto prefixSum = [&](int index) {
+        ll result = 0;
+        for (; index > 0; index -= index & -index) result += fenwick[index];
+        return result;
+    };
+    if (n > 0) {
+        add(1, a[0]);
+        ll rangeSum = prefixSum(n) - prefixSum(0);
+        (void)rangeSum;
+    }
 
     // ---------- Common algorithms ----------
     if (!a.empty()) {
